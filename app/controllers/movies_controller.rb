@@ -33,7 +33,10 @@ class MoviesController < ApplicationController
       flash.keep
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
-    @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
+    @noDirector = session[:noDirector]
+    session[:noDirector] = nil
+
+@movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
   end
 
   def new
@@ -70,6 +73,7 @@ def similar
 
   if @movie 
     if @movie.director == nil or @movie.director == ""
+      session[:noDirector] = @movie.title
       redirect_to movies_path and return
     else
       @sameDirectorMovies = Movie.find_all_by_director(@movie.director)
